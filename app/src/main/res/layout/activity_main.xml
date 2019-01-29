@@ -9,19 +9,19 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
         android:background="@android:color/white"
-        android:padding="10dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <ImageView
-            android:background="@android:color/black"
-            android:padding="5dp"
             android:id="@+id/main_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/black"
+            android:padding="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/sample"/>
+            android:src="@drawable/sample" />
     </LinearLayout>
 
     <LinearLayout
@@ -30,6 +30,11 @@
         android:layout_height="200dp"
         android:background="@android:color/white"
         android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/filter_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
