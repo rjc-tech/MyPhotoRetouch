@@ -5,15 +5,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import rjc.co.jp.myphotoretouch.R
-import android.content.DialogInterface;
-
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
     }
 
     override fun onResume() {
@@ -33,26 +30,14 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.save_image ->{
-                // どの選択肢が選ばれたかを保持する変数
-                var selectedId = 0
                 // ダイアログを表示する
                 var dialog = ConfirmDialog()
-                dialog.title = "保存ファイル名"
-                dialog.msg = "参照ファイル"
-                dialog.onRadioClickListener = DialogInterface.OnClickListener{dialog, id ->
-                    selectedId = id
-                }
-                dialog.okText = "OK"
-                dialog.cancelText = "キャンセル"
-                dialog.onOkClickListener = DialogInterface.OnClickListener { dialog, id ->
-                }
-                dialog.onCancelClickListener = DialogInterface.OnClickListener { dialog, id ->
-                }
-                // supportFragmentManagerはAppCompatActivity(正確にはFragmentActivity)を継承したアクティビティで使用可
                 dialog.show(supportFragmentManager, "tag")
             }
             R.id.load_image ->{}
-            R.id.about ->{}
+            R.id.about ->{
+                // about画面を表示する
+            }
         }
         return false
     }

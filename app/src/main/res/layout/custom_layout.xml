@@ -3,4 +3,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- コンテンツ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:paddingBottom="20dp"
+        android:gravity="left"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:id="@+id/buttonPanel"
+        >
+
+        <!-- タイトル -->
+        <TextView
+            android:id="@+id/fileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="保存ファイル名"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="ファイル名を入力"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            />
+
+        <!-- googleドライブ拡張用なのでコメントアウト
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            >
+
+            <RadioButton
+                android:id="@+id/radioButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="端末に画像を保存"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="GoogleDriveへ保存"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                />
+
+        </RadioGroup>
+        -->
+
+        <!-- OK ボタン -->
+        <Button
+            android:id="@+id/positive_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="OK"
+            android:textSize="18sp"
+            android:textColor="@android:color/darker_gray"
+            />
+
+    </LinearLayout>
+
 </LinearLayout>

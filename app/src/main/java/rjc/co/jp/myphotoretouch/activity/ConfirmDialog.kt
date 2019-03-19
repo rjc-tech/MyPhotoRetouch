@@ -5,45 +5,46 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.view.View
+import android.widget.*
+import rjc.co.jp.myphotoretouch.R
+import android.widget.RadioButton
 
-/**
- * Created by ninomae makoto.
- * @sample
- * var dialog = ConfirmDialog()
- * dialog.title = "タイトル"
- * dialog.msg = "メッセージ"
- * dialog.onOkClickListener = DialogInterface.OnClickListener { dialog, id ->
- *     Log.d( "tag", "ok clicked")
- * }
- * dialog.show( supportFragmentManager, "tag" )
- */
 class ConfirmDialog : DialogFragment() {
 
-    var title = "title"
-    var msg = "msg"
-    // 選択肢
-    val dialogMenu = arrayOf<String>("端末に画像を保存", "GoogleDriveへ保存")
-    var onRadioClickListener : DialogInterface.OnClickListener? = null
-    var okText = "OK"
-    var cancelText = "cancel"
-    /** ok押下時の挙動 */
-    var onOkClickListener : DialogInterface.OnClickListener? = null
-    /** cancel押下時の挙動 デフォルトでは何もしない */
-    var onCancelClickListener : DialogInterface.OnClickListener? = DialogInterface.OnClickListener { _, _ -> }
-
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Use the Builder class for convenient dialog construction
+        // アラートダイアログ設定
         val builder = AlertDialog.Builder(activity)
 
-        builder.setTitle(title)
-                .setMessage(msg)
-                .setTitle("保存ファイル名")
-                .setPositiveButton(okText, onOkClickListener)
-                .setNegativeButton(cancelText, onCancelClickListener)
-                .setSingleChoiceItems(dialogMenu, 1, onRadioClickListener)
+        // カスタムビュー設定
+        val view = activity.layoutInflater.inflate(R.layout.custom_layout, null)
 
-        // Create the AlertDialog object and return it
+        // アラーダイアログ作成
+        builder.setView(view)
+
+        val positiveButton = view.findViewById(R.id.positive_button) as Button
+        positiveButton.setOnClickListener(
+                View.OnClickListener {
+                    // 保存ファイル名設定
+                    val editText = view.findViewById(R.id.editText) as EditText
+
+                    if(editText == null || editText.getText().toString() == ""){
+                        Toast.makeText(context, "ファイルの名前を入力してください", Toast.LENGTH_SHORT).show()
+                    } else {
+                        /** 下記はgoogleドライブ拡張用
+                        // 保存場所設定
+                        val radioGroup  = view.findViewById(R.id.radioGroup) as RadioGroup
+                        val id = radioGroup.getCheckedRadioButtonId()
+                        val radioButton = view.findViewById(id) as RadioButton
+                        // 保存できたか表示
+                        Toast.makeText(context, radioButton.getText().toString(), Toast.LENGTH_SHORT).show()
+                        **/
+                        Toast.makeText(context, "端末に保存しました", Toast.LENGTH_SHORT).show()
+                        dismiss()
+                    }
+                }
+        )
+
         return builder.create()
     }
 
