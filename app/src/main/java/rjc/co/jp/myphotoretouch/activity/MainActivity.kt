@@ -1,5 +1,6 @@
 package rjc.co.jp.myphotoretouch.activity
 
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -7,12 +8,15 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.ImageView
+import jp.co.cyberagent.android.gpuimage.*
 import rjc.co.jp.myphotoretouch.R
 import rjc.co.jp.myphotoretouch.adapter.RecyclerFilterListAdapter
+import rjc.co.jp.myphotoretouch.executor.FilterExecutor
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClickListener {
+    private var mMainImage: ImageView? = null
+    private var mBaseBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +27,10 @@ class MainActivity : AppCompatActivity() {
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         recyclerView.layoutManager = linearLayoutManager
 
-        val imageView =  findViewById<ImageView>(R.id.main_image)
-        val baseImage = resources.getDrawable(R.drawable.sample, null) as BitmapDrawable
-        recyclerView.adapter = RecyclerFilterListAdapter(applicationContext, baseImage.bitmap )
+        mMainImage = findViewById(R.id.main_image)
+        val image = resources.getDrawable(R.drawable.sample, null) as BitmapDrawable
+        mBaseBitmap = image.bitmap
+        recyclerView.adapter = RecyclerFilterListAdapter(applicationContext, image.bitmap, this)
 
     }
 
@@ -43,11 +48,27 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onFilterClick(filterList: ArrayList<String>) {
+        if (filterList.isEmpty()) {
+            mMainImage?.setImageBitmap(mBaseBitmap)
+            return
+        }
+
+        val filterExecutor = FilterExecutor(applicationContext, mBaseBitmap!!)
+        for (filterName in filterList) {
+            filterExecutor.addGpuFilter(filterName)
+        }
+        mMainImage?.setImageBitmap(filterExecutor.getFilteredBitmap())
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.save_image ->{}
-            R.id.load_image ->{}
-            R.id.about ->{}
+            R.id.save_image -> {
+            }
+            R.id.load_image -> {
+            }
+            R.id.about -> {
+            }
         }
 
         return false
