@@ -22,13 +22,13 @@ import android.widget.ImageView
 import android.widget.Toast
 import rjc.co.jp.myphotoretouch.R
 import rjc.co.jp.myphotoretouch.adapter.RecyclerFilterListAdapter
+import rjc.co.jp.myphotoretouch.dialog.AboutDialogFragment
 import rjc.co.jp.myphotoretouch.executor.FilterExecutor
 import java.io.FileNotFoundException
 import java.io.OutputStream
 
 
 class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClickListener {
-
 
     private var mMainImageView: ImageView? = null
     private var mBaseBitmap: Bitmap? = null
@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClic
                 launchChooser()
             }
             R.id.about -> {
+                showAboutDialog()
             }
         }
         return false
@@ -133,6 +134,11 @@ class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClic
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
 
         startActivityForResult(chooserIntent, IMAGE_CHOOSER_RESULT_CODE)
+    }
+
+    private fun showAboutDialog(){
+        val dialog = AboutDialogFragment()
+        dialog.show(fragmentManager, "")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
