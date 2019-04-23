@@ -29,7 +29,11 @@ class RecyclerFilterListAdapter(
     private val mContext: Context = context
     private val mInflater: LayoutInflater = LayoutInflater.from(mContext)
     private val mFilterOrderList: ArrayList<String> = ArrayList()
-    private val mBaseBitmap: Bitmap = baseBitmap
+    private var mBaseBitmap : Bitmap? = null
+
+    init{
+        mBaseBitmap = baseBitmap
+    }
 
     interface OnFilterClickListener {
         fun onFilterClick(filterList: ArrayList<String>)
@@ -65,9 +69,13 @@ class RecyclerFilterListAdapter(
             holder.mOrderNumberText.text = ""
         }
 
+        if(mBaseBitmap == null){
+            holder.mItemView.setOnClickListener(null)
+            return
+        }
         val gpuImage = GPUImage(mContext)
         gpuImage.setImage(mBaseBitmap)
-        val filterExecutor = FilterExecutor(mContext, mBaseBitmap)
+        val filterExecutor = FilterExecutor(mContext, mBaseBitmap!!)
 
         filterExecutor.addGpuFilter(filterName)
         holder.mFilteredImage.setImageBitmap(filterExecutor.getFilteredBitmap())
@@ -82,6 +90,11 @@ class RecyclerFilterListAdapter(
             mFilterClickListener.onFilterClick(mFilterOrderList)
             notifyDataSetChanged()
         })
+    }
+
+    public fun changeBaseImageBitmap(bitmap : Bitmap){
+        mBaseBitmap = bitmap
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

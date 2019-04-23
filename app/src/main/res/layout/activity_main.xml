@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:id="@+id/area_main_image"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@android:color/white"
@@ -20,8 +20,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/black"
             android:padding="5dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/sample" />
+            android:scaleType="fitCenter" />
     </LinearLayout>
 
     <LinearLayout
