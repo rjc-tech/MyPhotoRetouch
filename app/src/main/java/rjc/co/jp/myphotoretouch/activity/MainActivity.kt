@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClic
         val filterExecutor = FilterExecutor(applicationContext, mBaseBitmap!!)
         for (filterName in filterList) {
             filterExecutor.addGpuFilter(filterName)
+            filterExecutor.setBaseImage(filterExecutor.getFilteredBitmap())
         }
         mFilteredBitmap = filterExecutor.getFilteredBitmap()
         mMainImageView?.setImageBitmap(mFilteredBitmap)

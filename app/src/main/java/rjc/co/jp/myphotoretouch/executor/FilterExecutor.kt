@@ -7,22 +7,26 @@ import jp.co.cyberagent.android.gpuimage.*
 /**
  * フィルタ適用処理クラス.
  */
-class FilterExecutor(context: Context, baseBitmap: Bitmap) {
+class FilterExecutor(context: Context) {
 
     companion object {
         val FILTER_LIST = arrayListOf("セピア", "擬色", "半透明", "黒こげ", "スケッチフィルタ", "黒画", "色反転", "ガラス玉", "ぼかす", "渦巻き")
     }
     private val mGpuImage: GPUImage = GPUImage(context)
-    private val mBaseImage: Bitmap = baseBitmap
+    private var mBaseImage: Bitmap? = null
 
-    init {
-        mGpuImage.setImage(mBaseImage)
+
+    constructor(context: Context, baseBitmap: Bitmap) : this(context){
+        setBaseImage(baseBitmap)
     }
 
     /**
      * 画像にフィルタを適用します.
      */
     fun addGpuFilter(filterName: String) {
+        if (mBaseImage == null) {
+            return
+        }
         when (filterName) {
             "セピア" -> {
                 mGpuImage.setFilter(GPUImageSepiaFilter())
@@ -58,6 +62,11 @@ class FilterExecutor(context: Context, baseBitmap: Bitmap) {
                 // ignore
             }
         }
+    }
+
+    fun setBaseImage(bitmap : Bitmap){
+        mBaseImage = bitmap
+        mGpuImage.setImage(mBaseImage)
     }
 
     /**
