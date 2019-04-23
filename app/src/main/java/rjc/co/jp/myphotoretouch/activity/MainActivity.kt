@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -22,16 +23,25 @@ import android.widget.Toast
 import rjc.co.jp.myphotoretouch.R
 import rjc.co.jp.myphotoretouch.adapter.RecyclerFilterListAdapter
 import rjc.co.jp.myphotoretouch.executor.FilterExecutor
+import java.io.FileNotFoundException
+import java.io.OutputStream
 
 
 class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClickListener {
-    private var mMainImage: ImageView? = null
+
+
+    private var mMainImageView: ImageView? = null
     private var mBaseBitmap: Bitmap? = null
+    private var mFilteredBitmap: Bitmap? = null
     private var mRecyclerView: RecyclerView? = null
 
-    var mPictureUri: Uri? = null
-    var IMAGE_CHOOSER_RESULT_CODE = 1000
-    var REQUEST_PERMISSION = 2000
+    private var mPictureUri: Uri? = null
+
+    companion object {
+        val IMAGE_CHOOSER_RESULT_CODE = 1000
+        val REQUEST_PERMISSION = 1001
+        val REQUEST_SAVE_IMAGE = 1002
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +52,7 @@ class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClic
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         mRecyclerView?.layoutManager = linearLayoutManager
 
-        mMainImage = findViewById(R.id.main_image)
+        mMainImageView = findViewById(R.id.main_image)
         val image = resources.getDrawable(R.drawable.sample, null) as BitmapDrawable
         mBaseBitmap = image.bitmap
         mRecyclerView?.adapter = RecyclerFilterListAdapter(applicationContext, image.bitmap, this)
@@ -68,7 +78,8 @@ class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClic
      */
     override fun onFilterClick(filterList: ArrayList<String>) {
         if (filterList.isEmpty()) {
-            mMainImage?.setImageBitmap(mBaseBitmap)
+            mMainImageView?.setImageBitmap(mBaseBitmap)
+            mFilteredBitmap = mBaseBitmap
             return
         }
 
@@ -77,12 +88,14 @@ class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClic
         for (filterName in filterList) {
             filterExecutor.addGpuFilter(filterName)
         }
-        mMainImage?.setImageBitmap(filterExecutor.getFilteredBitmap())
+        mFilteredBitmap = filterExecutor.getFilteredBitmap()
+        mMainImageView?.setImageBitmap(mFilteredBitmap)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.save_image -> {
+                saveBitmap()
             }
             R.id.load_image -> {
                 launchChooser()
@@ -135,13 +148,35 @@ class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClic
             val result = if (data == null) mPictureUri else {
                 data.data
             }
-            mMainImage?.setImageURI(result)
+            mMainImageView?.setImageURI(result)
             mBaseBitmap = MediaStore.Images.Media.getBitmap(contentResolver, result)
             mPictureUri = null
 
             (mRecyclerView?.adapter as RecyclerFilterListAdapter)
                     .changeBaseImageBitmap(mBaseBitmap!!)
+        } else if (requestCode == REQUEST_SAVE_IMAGE) {
+            if (resultCode == Activity.RESULT_OK && data?.data != null) {
+                val uri = data.data
+                var os: OutputStream? = null
+                try {
+                    os = contentResolver.openOutputStream(uri)
+                    mFilteredBitmap!!.compress(Bitmap.CompressFormat.PNG, 100, os)
+                } catch (e: FileNotFoundException) {
+                    Log.e("Error", e.message)
+                } finally {
+                    os?.close()
+                }
+            }
+
+
         }
+    }
+
+    private fun saveBitmap() {
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+        intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_TITLE, "img.png")
+        startActivityForResult(intent, REQUEST_SAVE_IMAGE)
     }
 
     private fun checkPermission(): Boolean {
