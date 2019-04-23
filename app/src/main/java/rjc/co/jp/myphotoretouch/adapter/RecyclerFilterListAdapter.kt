@@ -16,9 +16,14 @@ import rjc.co.jp.myphotoretouch.executor.FilterExecutor
 /**
  * フィルタリストアダプタクラス.
  */
-class RecyclerFilterListAdapter(context: Context, baseBitmap: Bitmap, listener: OnFilterClickListener) : RecyclerView.Adapter<RecyclerFilterListAdapter.ViewHolder>() {
+class RecyclerFilterListAdapter(
+        context: Context, baseBitmap: Bitmap, listener: OnFilterClickListener) :
+        RecyclerView.Adapter<RecyclerFilterListAdapter.ViewHolder>() {
 
-    private val NON_SELECTED_ORDER_VALUE = -1
+    companion object {
+        // フィルタ未選択中番号
+        private val NON_SELECTED_ORDER_VALUE = -1
+    }
 
     private val mFilterClickListener = listener
     private val mContext: Context = context
@@ -26,14 +31,12 @@ class RecyclerFilterListAdapter(context: Context, baseBitmap: Bitmap, listener: 
     private val mFilterOrderList: ArrayList<String> = ArrayList()
     private val mBaseBitmap: Bitmap = baseBitmap
 
-    val FILTER_LIST = arrayListOf("セピア", "擬色", "半透明", "黒こげ", "スケッチフィルタ", "黒画", "色反転", "ガラス玉", "ぼかす", "渦巻き")
-
     interface OnFilterClickListener {
         fun onFilterClick(filterList: ArrayList<String>)
     }
 
     override fun getItemCount(): Int {
-        return FILTER_LIST.size
+        return FilterExecutor.FILTER_LIST.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -46,7 +49,7 @@ class RecyclerFilterListAdapter(context: Context, baseBitmap: Bitmap, listener: 
             return
         }
         // positionでfilterの名を取得
-        val filterName = FILTER_LIST[position]
+        val filterName = FilterExecutor.FILTER_LIST[position]
         holder.mFilterName.text = filterName
 
         // 選択番号描画
@@ -65,53 +68,9 @@ class RecyclerFilterListAdapter(context: Context, baseBitmap: Bitmap, listener: 
         val gpuImage = GPUImage(mContext)
         gpuImage.setImage(mBaseBitmap)
         val filterExecutor = FilterExecutor(mContext, mBaseBitmap)
-        when (filterName) {
 
-            "セピア" -> {
-                gpuImage.setFilter(GPUImageSepiaFilter())
-                holder.mFilteredImage.setImageBitmap(gpuImage.bitmapWithFilterApplied)
-            }
-            "擬色" -> {
-                gpuImage.setFilter(GPUImageFalseColorFilter())
-                holder.mFilteredImage.setImageBitmap(gpuImage.bitmapWithFilterApplied)
-            }
-            "半透明" -> {
-                gpuImage.setFilter(GPUImageOpacityFilter(0.5f))
-                holder.mFilteredImage.setImageBitmap(gpuImage.bitmapWithFilterApplied)
-            }
-            "黒こげ" -> {
-                gpuImage.setFilter(GPUImageGammaFilter(5.0f))
-                holder.mFilteredImage.setImageBitmap(gpuImage.bitmapWithFilterApplied)
-            }
-            "スケッチフィルタ" -> {
-                gpuImage.setFilter(GPUImageSketchFilter())
-                holder.mFilteredImage.setImageBitmap(gpuImage.bitmapWithFilterApplied)
-            }
-            "黒画" -> {
-                gpuImage.setFilter(GPUImageSobelEdgeDetection())
-                holder.mFilteredImage.setImageBitmap(gpuImage.bitmapWithFilterApplied)
-            }
-
-            "ガラス玉" -> {
-                gpuImage.setFilter(GPUImageGlassSphereFilter())
-                holder.mFilteredImage.setImageBitmap(gpuImage.bitmapWithFilterApplied)
-            }
-            "色反転" -> {
-                gpuImage.setFilter(GPUImageColorInvertFilter())
-                holder.mFilteredImage.setImageBitmap(gpuImage.bitmapWithFilterApplied)
-            }
-            "ぼかす" -> {
-                gpuImage.setFilter(GPUImageCrosshatchFilter())
-                holder.mFilteredImage.setImageBitmap(gpuImage.bitmapWithFilterApplied)
-            }
-            "渦巻き" -> {
-                gpuImage.setFilter(GPUImageSwirlFilter())
-                holder.mFilteredImage.setImageBitmap(gpuImage.bitmapWithFilterApplied)
-            }
-            else -> {
-                holder.mFilteredImage.setImageBitmap(mBaseBitmap)
-            }
-        }
+        filterExecutor.addGpuFilter(filterName)
+        holder.mFilteredImage.setImageBitmap(filterExecutor.getFilteredBitmap())
 
         holder.mItemView.setOnClickListener({
             if (holder.mOrderNo != NON_SELECTED_ORDER_VALUE) {

@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
-import jp.co.cyberagent.android.gpuimage.*
 import rjc.co.jp.myphotoretouch.R
 import rjc.co.jp.myphotoretouch.adapter.RecyclerFilterListAdapter
 import rjc.co.jp.myphotoretouch.executor.FilterExecutor
@@ -48,12 +48,16 @@ class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClic
         return true
     }
 
+    /**
+     * フィルタリストクリック時に呼ばれます.
+     */
     override fun onFilterClick(filterList: ArrayList<String>) {
         if (filterList.isEmpty()) {
             mMainImage?.setImageBitmap(mBaseBitmap)
             return
         }
 
+        // 選択中フィルタを順番に適用
         val filterExecutor = FilterExecutor(applicationContext, mBaseBitmap!!)
         for (filterName in filterList) {
             filterExecutor.addGpuFilter(filterName)
