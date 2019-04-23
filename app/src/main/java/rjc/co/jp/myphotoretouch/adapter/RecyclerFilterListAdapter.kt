@@ -69,6 +69,8 @@ class RecyclerFilterListAdapter(
             holder.mOrderNumberText.text = ""
         }
 
+        holder.mFilteredImage.setImageBitmap(null)
+
         if(mBaseBitmap == null){
             holder.mItemView.setOnClickListener(null)
             return
@@ -92,7 +94,11 @@ class RecyclerFilterListAdapter(
         })
     }
 
-    public fun changeBaseImageBitmap(bitmap : Bitmap){
+    public fun changeBaseImageBitmap(bitmap: Bitmap) {
+        if (mBaseBitmap != null) {
+            mBaseBitmap!!.recycle()
+            mBaseBitmap = null
+        }
         mBaseBitmap = bitmap
         notifyDataSetChanged()
     }

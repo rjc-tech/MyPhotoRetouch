@@ -29,7 +29,6 @@ class AboutDialogFragment : DialogFragment() {
         }
 
         ossTextView.text = text
-
         return builder.create()
     }
 }

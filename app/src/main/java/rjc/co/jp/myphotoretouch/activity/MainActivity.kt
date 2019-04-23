@@ -7,7 +7,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -53,18 +53,10 @@ class MainActivity : AppCompatActivity(), RecyclerFilterListAdapter.OnFilterClic
         mRecyclerView?.layoutManager = linearLayoutManager
 
         mMainImageView = findViewById(R.id.main_image)
-        val image = resources.getDrawable(R.drawable.sample, null) as BitmapDrawable
-        mBaseBitmap = image.bitmap
-        mRecyclerView?.adapter = RecyclerFilterListAdapter(applicationContext, image.bitmap, this)
+        mBaseBitmap = BitmapFactory.decodeResource(resources, R.drawable.sample_image2)
+        mMainImageView?.setImageBitmap(mBaseBitmap)
+        mRecyclerView?.adapter = RecyclerFilterListAdapter(applicationContext, mBaseBitmap!!, this)
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
